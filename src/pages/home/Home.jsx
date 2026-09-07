@@ -1,7 +1,9 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import AllPosts from "./AllPosts";
-import { Spinner } from "@heroui/react";
+import CreatePost from "./CreatePost";
+import PostCardSkeleton from "./PostCardSkeleton";
+import { AiOutlineFileText } from "react-icons/ai";
 import  {getAllPosts}  from "../../APIData/Posts";
 import getUserPosts from "../../APIData/UserPosts";
 
@@ -21,8 +23,10 @@ export default function Home({isHome = true , userId}) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-stone-950">
-        <Spinner variant="dots" className="text-cyan-500" />
+      <div className="space-y-4 p-4 bg-page min-h-screen">
+        {isHome && <CreatePost />}
+        <PostCardSkeleton />
+        <PostCardSkeleton />
       </div>
     );
   }
@@ -37,14 +41,16 @@ export default function Home({isHome = true , userId}) {
   }
   // display posts
   return (
-    <div className="space-y-4 p-4 bg-stone-950 min-h-screen">
+    <div className="space-y-4 p-4 bg-page min-h-screen">
+      {isHome && <CreatePost />}
       {posts?.length > 0 ? (
         posts.map((post) => <AllPosts key={post._id} post={post} />)
       ) : (
-        <p className="text-stone-400 text-center">No posts available</p>
+        <div className="flex flex-col items-center gap-3 py-16 text-muted">
+          <AiOutlineFileText className="text-4xl text-muted" />
+          <p className="text-sm">No posts yet. Be the first to share something!</p>
+        </div>
       )}
-
-      
     </div>
   );
 }

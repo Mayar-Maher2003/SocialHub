@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../../schema/loginSchema";
 import { loginData } from "../../../services/loginservices";
-import  {useContext} from "react";
-import { UserContext } from './../../../context/UserContext';
+import { UserContext } from "./../../../context/UserContext";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import FieldError from "../../../components/form/FieldError";
+import FormError from "../../../components/form/FormError";
 
 export default function Login() {
   const navigate = useNavigate();
   const { saveUser } = useContext(UserContext);
+  const [serverError, setServerError] = useState("");
 
   const {
     register,
@@ -17,45 +20,40 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-async function onSubmitForm(data) {
-  try {
-    const response = await loginData(data);
-
-    // console.log("Response:", response);
-        saveUser(response.data.user);
-
-
-    localStorage.setItem("user-token", response.data.token || response.data.data.token);
-
-    console.log("Saved Token:", localStorage.getItem("token"));
-
-navigate("/", { replace: true });
-  } catch (error) {
-    console.log("Error status:", error.response?.status || "No response");
-    console.log("Error data:", error.response?.data || error.message);
+  async function onSubmitForm(data) {
+    setServerError("");
+    try {
+      const response = await loginData(data);
+      saveUser(response.data.user);
+      localStorage.setItem("user-token", response.data.token || response.data.data.token);
+      navigate("/", { replace: true });
+    } catch (error) {
+      setServerError(getErrorMessage(error, "Invalid email or password. Please try again."));
+    }
   }
-}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-950 px-4">
       <div
-        className="p-[1px] rounded-3xl bg-gradient-to-r 
-    from-[#00BFFF] via-[#00E5FF] to-[#0099FF] 
+        className="w-full max-w-[440px] sm:max-w-[480px] p-[1px] rounded-3xl bg-gradient-to-r
+    from-[#00BFFF] via-[#00E5FF] to-[#0099FF]
     shadow-[0_0_20px_rgba(0,191,255,0.35)]"
       >
         {/* Card */}
         <div
-          className="w-[340px] lg:w-[420px]
-      bg-[#0A0A0A] 
-      rounded-3xl 
+          className="w-full
+      bg-[#0A0A0A]
+      rounded-3xl
       border border-white/5
-      p-8 lg:p-10
+      p-6 sm:p-8
       flex flex-col gap-6"
         >
           {/* Title */}
@@ -68,25 +66,25 @@ navigate("/", { replace: true });
             onSubmit={handleSubmit(onSubmitForm)}
             className="flex flex-col gap-4"
           >
+            <FormError message={serverError} />
+
             {/* Email */}
             <div className="flex flex-col gap-1">
               <input
                 type="email"
                 placeholder="Email Address"
-  autoComplete="email" 
+                autoComplete="email"
                 {...register("email")}
-                className="w-full h-12 px-4 
-            bg-[#111] border border-white/10 
-            text-white placeholder:text-gray-500 
+                className="w-full h-12 px-4
+            bg-[#111] border border-white/10
+            text-white placeholder:text-gray-500
             rounded-xl
-            focus:outline-none 
-            focus:ring-2 focus:ring-cyan-400/40 
+            focus:outline-none
+            focus:ring-2 focus:ring-cyan-400/40
             focus:border-cyan-400
             transition duration-200"
               />
-              {errors.email && (
-                <p className="text-red-400 text-sm">{errors.email.message}</p>
-              )}
+              <FieldError message={errors.email?.message} />
             </div>
 
             {/* Password */}
@@ -94,23 +92,18 @@ navigate("/", { replace: true });
               <input
                 type="password"
                 placeholder="Enter your password"
-                  autoComplete="current-password" 
-
+                autoComplete="current-password"
                 {...register("password")}
-                className="w-full h-12 px-4 
-            bg-[#111] border border-white/10 
-            text-white placeholder:text-gray-500 
+                className="w-full h-12 px-4
+            bg-[#111] border border-white/10
+            text-white placeholder:text-gray-500
             rounded-xl
-            focus:outline-none 
-            focus:ring-2 focus:ring-cyan-400/40 
+            focus:outline-none
+            focus:ring-2 focus:ring-cyan-400/40
             focus:border-cyan-400
             transition duration-200"
               />
-              {errors.password && (
-                <p className="text-red-400 text-sm">
-                  {errors.password.message}
-                </p>
-              )}
+              <FieldError message={errors.password?.message} />
             </div>
 
             {/* Button */}
