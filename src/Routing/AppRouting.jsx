@@ -11,7 +11,6 @@ import NotificationsPage from "../pages/notifications/NotificationsPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 import SettingsLayout from "../layouts/SettingsLayout/SettingsLayout";
 import ProtectedRoute from "./ProtectedRoute";
-import NotFound from "./pages/notfound/Notfound";
 import { AuthContext } from "../context/AuthContext";
    export const routes = createBrowserRouter([
   {
@@ -28,7 +27,6 @@ import { AuthContext } from "../context/AuthContext";
       { path: "post/:id", element: <PostDetails /> },
       { path: "bookmarks", element: <BookmarksPage /> },
       { path: "notifications", element: <NotificationsPage /> },
-{path: "*", element: <NotFound /> }
     ],
   },
   {
