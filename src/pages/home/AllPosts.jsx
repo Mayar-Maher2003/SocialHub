@@ -182,7 +182,7 @@ export default function AllPosts({ post }) {
               >
                 <DropdownItem key="copy">Copy link</DropdownItem>
                 {isOwner && (
-                  <DropdownItem key="edit" onClick={() => setShowEditModal(true)}>
+                  <DropdownItem key="edit" onPress={() => setShowEditModal(true)}>
                     Edit Post
                   </DropdownItem>
                 )}
@@ -191,7 +191,7 @@ export default function AllPosts({ post }) {
                     key="delete"
                     color="danger"
                     className="text-red-500"
-                    onClick={() => setShowDeleteModal(true)}
+                    onPress={() => setShowDeleteModal(true)}
                   >
                     Delete Post
                   </DropdownItem>

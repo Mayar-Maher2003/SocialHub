@@ -10,9 +10,12 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return
-          if (/[\/]node_modules[\/](react|react-dom|scheduler|react-router|react-router-dom)[\/]/.test(id))
+          // Rollup ids use OS-native separators on Windows; normalise so the
+          // matches below work on both Windows and the Linux CI/Vercel build.
+          const path = id.split('\\').join('/')
+          if (/\/node_modules\/(react|react-dom|scheduler|react-router|react-router-dom)\//.test(path))
             return 'react-vendor'
-          if (/[\/]node_modules[\/](@heroui|@react-aria|@react-stately|@react-types|framer-motion|motion-dom|motion-utils)[\/]/.test(id))
+          if (/\/node_modules\/(@heroui|@react-aria|@react-stately|@react-types|framer-motion|motion-dom|motion-utils)\//.test(path))
             return 'ui-vendor'
           return 'vendor'
         },

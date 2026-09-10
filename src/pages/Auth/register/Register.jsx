@@ -5,12 +5,14 @@ import { registerData } from "../../../services/registerServices";
 import { registerSchema } from "../../../schema/registerschema";
 import { useContext, useState } from "react";
 import { UserContext } from "./../../../context/UserContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { getErrorMessage } from "../../../utils/getErrorMessage";
 import FieldError from "../../../components/form/FieldError";
 import FormError from "../../../components/form/FormError";
 
 export default function Register() {
   const { saveUser } = useContext(UserContext);
+  const { saveUserToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
 
@@ -40,8 +42,16 @@ export default function Register() {
     setServerError("");
     try {
       const response = await registerData(data);
-      localStorage.setItem("token", response.data.token);
-      saveUser(response.data.user);
+
+      const payload = response?.data ?? response;
+      const token = payload?.token ?? response?.token;
+      const user = payload?.user ?? response?.user;
+
+      if (user) saveUser(user);
+      // Go through the context rather than writing localStorage directly, so
+      // AuthContext state and stored token can never disagree.
+      if (token) saveUserToken(token);
+
       navigate("/auth/login");
     } catch (error) {
       setServerError(getErrorMessage(error, "Registration failed. Please try again."));

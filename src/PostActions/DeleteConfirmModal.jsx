@@ -52,14 +52,14 @@ export default function DeleteConfirmModal({ postId, isOpen, onClose }) {
             </ModalBody>
             <ModalFooter className="border-t border-subtle">
               <Button
-                onClick={() => handleOpenChange(false)}
+                onPress={() => handleOpenChange(false)}
                 isDisabled={isPending}
                 className="bg-surface-2 text-ink"
               >
                 Cancel
               </Button>
               <Button
-                onClick={() => !isPending && mutate()}
+                onPress={() => !isPending && mutate()}
                 isDisabled={isPending}
                 className="bg-red-600 hover:bg-red-700 text-white"
               >

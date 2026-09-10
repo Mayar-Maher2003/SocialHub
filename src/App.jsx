@@ -13,8 +13,10 @@ export default function App() {
   return (
     <>
     <SettingsProvider>
-    <AuthProvider>
+    {/* UserProvider must wrap AuthProvider: logout() reaches into
+        UserContext to clear the signed-in user's cached profile. */}
     <UserProvider>
+    <AuthProvider>
     <QueryClientProvider client={queryClient}>
     <ToastProvider>
       <RouterProvider router ={routes}/>
@@ -22,8 +24,8 @@ export default function App() {
 
     </QueryClientProvider>
 
-    </UserProvider>
     </AuthProvider>
+    </UserProvider>
     </SettingsProvider>
     </>
   )

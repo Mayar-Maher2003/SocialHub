@@ -91,13 +91,8 @@ export default function SettingsPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleConfirmLogout = () => {
+    // logout() clears every token key and the cached user profile.
     logout();
-    // The app has historically written the auth token under a couple of
-    // different localStorage keys depending on which flow set it (see
-    // utils/getAuthToken.js) - clear all of them so logging out here can't
-    // leave a stale token behind that a later request would still pick up.
-    localStorage.removeItem("user-token");
-    localStorage.removeItem("user_token");
     setShowLogoutConfirm(false);
     navigate("/auth/login", { replace: true });
   };
@@ -196,7 +191,7 @@ export default function SettingsPage() {
     divider={false}
   >
     <Button
-      onClick={() => setShowLogoutConfirm(true)}
+      onPress={() => setShowLogoutConfirm(true)}
       variant="outline"
 className="border border-red-500/40 text-red-500 hover:bg-red-500/10 hover:border-red-500 gap-2 transition-colors"      startContent={<IoLogOutOutline className="text-lg" />}
     >
@@ -215,10 +210,10 @@ className="border border-red-500/40 text-red-500 hover:bg-red-500/10 hover:borde
                 <p className="text-muted">Are you sure you want to log out of your account?</p>
               </ModalBody>
               <ModalFooter className="border-t border-subtle">
-                <Button onClick={() => setShowLogoutConfirm(false)} className="bg-surface-2 text-ink">
+                <Button onPress={() => setShowLogoutConfirm(false)} className="bg-surface-2 text-ink">
                   Cancel
                 </Button>
-                <Button onClick={handleConfirmLogout} className="bg-red-600 hover:bg-red-700 text-white">
+                <Button onPress={handleConfirmLogout} className="bg-red-600 hover:bg-red-700 text-white">
                   Log Out
                 </Button>
               </ModalFooter>

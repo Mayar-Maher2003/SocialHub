@@ -80,7 +80,7 @@ export default function EditPostModal({ post, isOpen, onClose }) {
             <ModalFooter className="border-t border-subtle">
               <Button
                 type="button"
-                onClick={() => handleOpenChange(false)}
+                onPress={() => handleOpenChange(false)}
                 isDisabled={isPending}
                 className="bg-surface-2 text-ink"
               >

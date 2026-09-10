@@ -24,11 +24,8 @@ export default function Nav() {
    const navigate = useNavigate();
 
   const handleLogout = () => {
+    // logout() clears every token key and the cached user profile.
     logout();
-    // See utils/getAuthToken.js - the token has historically been written
-    // under a couple of different localStorage keys, so clear all of them.
-    localStorage.removeItem("user-token");
-    localStorage.removeItem("user_token");
     navigate("/auth/login");
   };
 
@@ -79,7 +76,7 @@ export default function Nav() {
             <DropdownItem key="settings" as={NavLink} to="/settings">
               Settings
             </DropdownItem>
-            <DropdownItem key="logout" color="danger" onClick={handleLogout}>
+            <DropdownItem key="logout" color="danger" onPress={handleLogout}>
               Log Out
             </DropdownItem>
           </DropdownMenu>

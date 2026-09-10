@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../../schema/loginSchema";
 import { loginData } from "../../../services/loginservices";
 import { UserContext } from "./../../../context/UserContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { getErrorMessage } from "../../../utils/getErrorMessage";
 import FieldError from "../../../components/form/FieldError";
 import FormError from "../../../components/form/FormError";
@@ -12,6 +13,7 @@ import FormError from "../../../components/form/FormError";
 export default function Login() {
   const navigate = useNavigate();
   const { saveUser } = useContext(UserContext);
+  const { saveUserToken } = useContext(AuthContext);
   const [serverError, setServerError] = useState("");
 
   const {
@@ -32,8 +34,24 @@ export default function Login() {
     setServerError("");
     try {
       const response = await loginData(data);
-      saveUser(response.data.user);
-      localStorage.setItem("user-token", response.data.token || response.data.data.token);
+
+      // This API wraps its payload ({ success, message, data: {...} }), but
+      // tolerate a flat body so a shape change cannot throw past the guard below.
+      const payload = response?.data ?? response;
+      const token = payload?.token ?? response?.token;
+      const user = payload?.user ?? response?.user;
+
+      if (!token) {
+        setServerError("Login succeeded but no token was returned. Please try again.");
+        return;
+      }
+
+      // Persist auth state BEFORE navigating. ProtectedRoute gates "/" on
+      // AuthContext.userToken, so navigating without updating the context
+      // sends the guard straight back to /auth/login.
+      if (user) saveUser(user);
+      saveUserToken(token);
+
       navigate("/", { replace: true });
     } catch (error) {
       setServerError(getErrorMessage(error, "Invalid email or password. Please try again."));

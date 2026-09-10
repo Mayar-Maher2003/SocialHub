@@ -5,7 +5,7 @@ const BASE_URL = "https://route-posts.routemisr.com";
 
 // display posts
 export async function getAllPosts() {
-  const token = localStorage.getItem("user-token");
+  const token = getAuthToken();
 
   const { data } = await axios.get("https://route-posts.routemisr.com/posts", {
     headers: {
@@ -22,7 +22,7 @@ export async function getAllPosts() {
 }
 
 export async function getSinglePost(id) {
-  const token = localStorage.getItem("user-token");
+  const token = getAuthToken();
 
   const response = await axios.get(
     `https://route-posts.routemisr.com/posts/${id}`,

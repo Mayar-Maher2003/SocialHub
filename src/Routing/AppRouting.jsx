@@ -10,8 +10,8 @@ import BookmarksPage from "../pages/bookmarks/BookmarksPage";
 import NotificationsPage from "../pages/notifications/NotificationsPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 import SettingsLayout from "../layouts/SettingsLayout/SettingsLayout";
+import Notfound from "../pages/notfound/Notfound";
 import ProtectedRoute from "./ProtectedRoute";
-import { AuthContext } from "../context/AuthContext";
    export const routes = createBrowserRouter([
   {
     path: "/",
@@ -40,14 +40,16 @@ import { AuthContext } from "../context/AuthContext";
   },
   {
     path: "auth",
-    element: (
-      <AuthContext>
-        <AuthLayout />
-      </AuthContext>
-    ),
+    element: <AuthLayout />,
     children: [
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
     ],
+  },
+  {
+    // Catch-all, declared last. Left outside ProtectedRoute on purpose: an
+    // unmatched URL should show the 404 page, not redirect to login.
+    path: "*",
+    element: <Notfound />,
   },
 ]);
