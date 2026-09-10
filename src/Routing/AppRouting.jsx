@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import Home from "../pages/home/Home";
 import Profile from "../pages/profile/Profile";
-import Notfound from "../pages/Notfound/Notfound";
+import Notfound from "..pages/notfound/Notfound.jsx";
 import Register from "../pages/Auth/register/Register";
 import Login from "../pages/Auth/login/Login";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout";
